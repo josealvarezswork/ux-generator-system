@@ -5,8 +5,10 @@ console.log('APP.JS LOADED - START');
 
 const CONFIG = {
   API_URL: "https://broad-shadow-d8e2.josealvarezswork.workers.dev/api/generate",
+  OPENAI_URL: "https://api.openai.com/v1/chat/completions",
   AUTOSAVE_DELAY: 2000,
   STORAGE_KEY: "uxFormDraft",
+  API_KEY_STORAGE: "uxgen_openai_key",
   MAX_CHAR_WARNING: 0.8,
 };
 
@@ -14,6 +16,105 @@ let lastGeneratedOutput = "";
 let lastStructuredData = null;
 let autosaveTimer = null;
 let currentSection = 1;
+let currentMode = "demo"; // "demo" or "byok"
+
+// ============================================================================
+// DEMO OUTPUT DATA (Pre-generated example based on MediTrack)
+// ============================================================================
+
+const DEMO_OUTPUT = {
+  "projectName": "MediTrack",
+  "oneSentence": "Mobile app for chronic disease patients to record symptoms and share data with doctors in real time.",
+  "productType": "App",
+  "platforms": ["Mobile", "Web"],
+  "status": "Draft",
+  "problemStatement": {
+    "situation": "Patients with diabetes, asthma, or hypertension must manually record symptoms on paper or fragmented apps. Doctors lack access to consistent data.",
+    "consequences": "Incomplete data leads to less accurate diagnoses. Patients forget logs resulting in ineffective tracking. Changing doctors means losing history.",
+    "currentWorkarounds": "WhatsApp, calls, Excel. Every doctor asks for different data. Duplication of effort."
+  },
+  "evidence": {
+    "userContext": "Adult patients (35-65) with chronic diseases, basic smartphone users. Some with low digital literacy.",
+    "userGoal": "Have a centralized place to record symptoms and share with doctor without losing data.",
+    "researchMethods": ["User interviews"],
+    "keyFindings": "n=12 interviews with diabetic patients. 83% use WhatsApp to share data with doctors. 91% lose logs when changing clinics."
+  },
+  "valueProposition": {
+    "desiredOutcome": "Patient records symptom → App automatically notifies doctor → Doctor sees trends → Fewer unnecessary visits.",
+    "whyUseThis": "Stop being a passive patient to an active health manager. Doctor has real data, not patient memories.",
+    "productGoals": [
+      "Reduce consultation time by 30% (fewer explanations)",
+      "Increase treatment adherence by 45% (reminders + data)",
+      "Improve diagnostic precision (data vs intuition)"
+    ]
+  },
+  "scope": {
+    "mustHave": [
+      "Dashboard with symptoms from last 30 days",
+      "Export PDF to take to doctor",
+      "Automatic daily reminders",
+      "Complete history (search by date/symptom)"
+    ],
+    "niceToHave": [
+      "Trend charts",
+      "Share access with family members"
+    ],
+    "outOfScope": [
+      "Automatic diagnosis",
+      "Integration with hospital records"
+    ]
+  },
+  "constraints": {
+    "technical": "iOS 12+, Android 8+. Does not require network access (local storage). Max storage 50MB.",
+    "business": "MVP in 4 months. Team: 2 devs, 1 designer, 1 PM. Budget: $80k.",
+    "risks": "Medical regulation (telemedicine requires approval). Competition: Google Health exists but not for chronic diseases. Patient distrust in health apps."
+  },
+  "metrics": {
+    "primary": [
+      { "metric": "Weekly usage rate", "target": "70%" },
+      { "metric": "Average logs/week", "target": "4+" }
+    ]
+  },
+  "validation": {
+    "facts": [
+      "n=12 interviews confirmed 'patient needs centralized place' - Source: Research Desk 2025",
+      "There are 2M diabetics in Mexico - Source: IMSS"
+    ],
+    "assumptions": [
+      "Patients will use app if there are reminders",
+      "Doctors will adopt app if it saves them 10+ min/consultation"
+    ],
+    "needsValidation": ["Do doctors actually open the app during a consultation?"]
+  },
+  "persona": {
+    "demographics": "35–65, Patients with chronic diseases (diabetes, asthma, hypertension)",
+    "techProficiency": "Basic",
+    "motivations": "Health, organization, not losing info, trust in doctor",
+    "dailyRoutine": "7am: Wakes up, takes medicines. 12pm: Records how they feel. 6pm: Checks if they have a follow-up reminder. If not feeling well, opens app for historical data before calling doctor."
+  },
+  "journey": [
+    {
+      "stage": "Pre-diagnosis",
+      "description": "Patient feels symptoms but doesn't know if it's 'normal'. Searches Google, gets scared.",
+      "opportunities": ["Provide symptom tracking before diagnosis", "Offer reassuring content"]
+    },
+    {
+      "stage": "Initial Visit",
+      "description": "Doctor asks questions, patient doesn't remember well when it started. Prescribes medicines but no clear plan.",
+      "opportunities": ["Record symptoms BEFORE going to doctor", "Create shareable summary"]
+    },
+    {
+      "stage": "Ongoing Management",
+      "description": "Patient takes medicines irregularly. Forgets symptoms for next appointment. Doctor has no baseline to adjust.",
+      "opportunities": ["Automatic reminders", "Trend visualization", "Doctor dashboard"]
+    }
+  ],
+  "_meta": {
+    "generatedAt": new Date().toISOString(),
+    "mode": "demo",
+    "note": "This is a pre-generated demo output. Use your own OpenAI API key to generate custom outputs."
+  }
+};
 
 // ============================================================================
 // DOM ELEMENTS
@@ -32,6 +133,11 @@ const saveNotionCreds = document.getElementById("saveNotionCreds");
 const output = document.getElementById("output");
 const progressBadge = document.getElementById("progressBadge");
 const exampleToggleBtn = document.getElementById("exampleToggleBtn");
+const modeTabs = document.getElementById("modeTabs");
+const apiKeyInput = document.getElementById("apiKeyInput");
+const demoNotice = document.getElementById("demoNotice");
+const openaiApiKeyInput = document.getElementById("openaiApiKey");
+const saveApiKeyCheckbox = document.getElementById("saveApiKey");
 const shortcutsHint = document.getElementById("shortcutsHint");
 const numStagesInput = document.getElementById("numStages");
 const stagesContainer = document.getElementById("stagesContainer");
@@ -110,12 +216,75 @@ document.addEventListener("DOMContentLoaded", () => {
     // ignore storage errors
   }
 
+  // Load saved OpenAI API key
+  try {
+    const savedApiKey = localStorage.getItem(CONFIG.API_KEY_STORAGE);
+    if (savedApiKey && openaiApiKeyInput) {
+      openaiApiKeyInput.value = savedApiKey;
+    }
+  } catch (e) {
+    // ignore storage errors
+  }
+
+  // Initialize mode selector
+  initModeSelector();
+
   loadDraft();
   setupEventListeners();
   updateProgressBadge();
   updateTabsCompletion();
   setupCharCounters();
 });
+
+// ============================================================================
+// MODE SELECTOR (Demo vs BYOK)
+// ============================================================================
+
+function initModeSelector() {
+  if (!modeTabs) return;
+
+  modeTabs.addEventListener('click', (e) => {
+    const tab = e.target.closest('.mode-tab');
+    if (!tab) return;
+
+    const mode = tab.dataset.mode;
+    switchMode(mode);
+  });
+
+  // Set initial mode
+  switchMode('demo');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+
+  // Update tab UI
+  if (modeTabs) {
+    modeTabs.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.mode === mode);
+    });
+  }
+
+  // Show/hide API key input
+  if (apiKeyInput) {
+    apiKeyInput.style.display = mode === 'byok' ? 'block' : 'none';
+  }
+
+  // Show/hide demo notice
+  if (demoNotice) {
+    demoNotice.style.display = mode === 'demo' ? 'block' : 'none';
+  }
+
+  // Update submit button text
+  if (submitBtn) {
+    const btnContent = submitBtn.querySelector('.btn-content');
+    if (btnContent) {
+      btnContent.textContent = mode === 'demo' ? 'Generate Demo' : 'Generate';
+    }
+  }
+
+  console.log('Mode switched to:', mode);
+}
 
 // ============================================================================
 // LOAD & SAVE DRAFT
@@ -510,34 +679,86 @@ async function submitForm() {
     // Form data saved for fallback
     const formDataBackup = data;
 
-    const res = await fetch(CONFIG.API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    // ========== MODE HANDLING ==========
+    if (currentMode === 'demo') {
+      // Demo mode: use pre-generated output
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate loading
+      lastStructuredData = JSON.parse(JSON.stringify(DEMO_OUTPUT)); // Clone demo data
+      lastGeneratedOutput = JSON.stringify(lastStructuredData, null, 2);
+      showToast('Demo output generated! Use your API key for real generation.', 'success');
+    } else {
+      // BYOK mode: use user's OpenAI API key
+      const apiKey = openaiApiKeyInput?.value?.trim();
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`API Error ${res.status}: ${errorText.slice(0, 200)}`);
-    }
-
-    const result = await res.json();
-    lastGeneratedOutput = result.result;
-
-    // Parse the AI-generated JSON and store it for Notion
-    try {
-      let cleanJson = lastGeneratedOutput.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
-      lastStructuredData = JSON.parse(cleanJson);
-      if (!lastStructuredData.projectName) {
-        lastStructuredData.projectName = formDataBackup.projectName || 'UX Strategy Brief';
+      if (!apiKey) {
+        throw new Error('Please enter your OpenAI API key');
       }
-      console.log('Parsed AI JSON:', lastStructuredData);
-    } catch (parseErr) {
-      console.warn('Could not parse AI JSON, using form data:', parseErr);
-      lastStructuredData = formDataBackup;
+
+      if (!apiKey.startsWith('sk-')) {
+        throw new Error('Invalid API key format. Key should start with "sk-"');
+      }
+
+      // Save API key if checkbox is checked
+      if (saveApiKeyCheckbox?.checked) {
+        localStorage.setItem(CONFIG.API_KEY_STORAGE, apiKey);
+      } else {
+        localStorage.removeItem(CONFIG.API_KEY_STORAGE);
+      }
+
+      // Call OpenAI directly
+      const systemPrompt = `You are a UX strategist. Transform the provided product brief into a structured JSON output with the following sections: projectName, oneSentence, productType, platforms, status, problemStatement, evidence, valueProposition, scope, constraints, metrics, validation, persona, and journey. Be concise and actionable.`;
+
+      const userPrompt = `Create a structured UX brief from this input:\n\n${JSON.stringify(data, null, 2)}`;
+
+      const res = await fetch(CONFIG.OPENAI_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
+          ],
+          temperature: 0.7,
+          response_format: { type: "json_object" }
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          throw new Error('Invalid API key. Please check your OpenAI API key.');
+        } else if (res.status === 429) {
+          throw new Error('Rate limit exceeded. Please wait and try again.');
+        } else if (res.status === 402) {
+          throw new Error('Insufficient credits. Please add credits to your OpenAI account.');
+        }
+        throw new Error(errorData.error?.message || `API Error ${res.status}`);
+      }
+
+      const result = await res.json();
+      lastGeneratedOutput = result.choices[0].message.content;
+
+      // Parse the AI-generated JSON
+      try {
+        lastStructuredData = JSON.parse(lastGeneratedOutput);
+        if (!lastStructuredData.projectName) {
+          lastStructuredData.projectName = formDataBackup.projectName || 'UX Strategy Brief';
+        }
+        console.log('Parsed AI JSON:', lastStructuredData);
+      } catch (parseErr) {
+        console.warn('Could not parse AI JSON, using form data:', parseErr);
+        lastStructuredData = formDataBackup;
+      }
+
+      showToast('Structured JSON ready!', 'success');
     }
 
     // Display formatted output
+    const emptyState = document.querySelector('.output-empty');
     if (emptyState) emptyState.style.display = 'none';
     if (document.getElementById('livePreview')) document.getElementById('livePreview').style.display = 'none';
     output.style.display = 'block';
@@ -553,7 +774,6 @@ async function submitForm() {
     copyJsonBtn.disabled = false;
     sendNotionBtn.disabled = !lastStructuredData;
     showStatus('✓ Output generated', 'success');
-    showToast('Structured JSON ready!', 'success');
 
   } catch (err) {
     console.error("Submit error:", err);

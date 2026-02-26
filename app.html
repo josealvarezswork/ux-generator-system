@@ -516,6 +516,41 @@
                   </div>
                 </div>
 
+                <!-- API Mode Selector -->
+                <div class="api-mode-selector">
+                  <div class="mode-tabs" id="modeTabs">
+                    <button type="button" class="mode-tab active" data-mode="demo">
+                      <span class="mode-icon">🎮</span>
+                      <span class="mode-label">Demo Mode</span>
+                      <span class="mode-desc">See example output</span>
+                    </button>
+                    <button type="button" class="mode-tab" data-mode="byok">
+                      <span class="mode-icon">🔑</span>
+                      <span class="mode-label">Your API Key</span>
+                      <span class="mode-desc">Use your OpenAI key</span>
+                    </button>
+                  </div>
+
+                  <!-- BYOK API Key Input (hidden by default) -->
+                  <div class="api-key-input" id="apiKeyInput" style="display: none;">
+                    <div class="field">
+                      <label for="openaiApiKey">OpenAI API Key</label>
+                      <input class="input" id="openaiApiKey" name="openaiApiKey" type="password"
+                        placeholder="sk-xxxxxxxxxxxxxxxx" />
+                      <p class="field-hint">Get your key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a>. Your key stays in your browser.</p>
+                    </div>
+                    <label class="checkbox-label" style="margin-top: 8px;">
+                      <input type="checkbox" id="saveApiKey" checked />
+                      <span>Remember my key (stored locally)</span>
+                    </label>
+                  </div>
+
+                  <!-- Demo Mode Notice -->
+                  <div class="demo-notice" id="demoNotice">
+                    <p><strong>Demo Mode:</strong> Shows a pre-generated example based on the MediTrack project. No API calls are made.</p>
+                  </div>
+                </div>
+
                 <div class="actions">
                   <button class="btn" type="submit" id="submitBtn" aria-label="Generate UX output">
                     <span class="btn-content">Generate</span>
