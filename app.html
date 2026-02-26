@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
@@ -19,28 +19,24 @@
             <path d="M10 14L4 8L10 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round" />
           </svg>
-          Volver al inicio
+          Back to home
         </a>
         <h1 style="margin: 0; line-height: 1.1;">UX AI Generator</h1>
-        <p class="sub" style="margin-top: 4px;">Llena el brief. Genero un output estructurado (Project Overview →
+        <p class="sub" style="margin-top: 4px;">Fill in the brief. I'll generate a structured output (Project Overview →
           Research → Flows).</p>
       </div>
       <div class="header-actions">
         <div class="progress-badge" id="progressBadge">
-          <span class="progress-text">0/10 secciones</span>
+          <span class="progress-text">0/10 sections</span>
         </div>
-        <button type="button" class="btn secondary" id="loadExampleBtn" title="Cargar ejemplo">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-          Ejemplo
-        </button>
-        <button type="button" class="btn secondary" id="clearDraftBtn" title="Limpiar borrador guardado">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 4h12M5 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1m2 0v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h10z"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          Limpiar
+        <button type="button" class="btn secondary example-toggle" id="exampleToggleBtn" title="Load/clear example">
+          <span class="example-toggle-label">Example</span>
+          <span class="example-toggle-switch">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+            <span class="toggle-state">off</span>
+          </span>
         </button>
       </div>
     </div>
@@ -62,8 +58,8 @@
               <div class="phase-header">
                 <div class="phase-icon yellow">1</div>
                 <div class="phase-info">
-                  <strong>Definicion</strong>
-                  <span>Que y por que</span>
+                  <strong>Definition</strong>
+                  <span>What and why</span>
                 </div>
                 <div class="phase-score">0/3</div>
               </div>
@@ -82,8 +78,8 @@
               <div class="phase-header">
                 <div class="phase-icon green">2</div>
                 <div class="phase-info">
-                  <strong>Estrategia</strong>
-                  <span>Alcance y limites</span>
+                  <strong>Strategy</strong>
+                  <span>Scope and limits</span>
                 </div>
                 <div class="phase-score">0/3</div>
               </div>
@@ -100,8 +96,8 @@
               <div class="phase-header">
                 <div class="phase-icon orange">3</div>
                 <div class="phase-info">
-                  <strong>Validacion</strong>
-                  <span>Metricas e hipotesis</span>
+                  <strong>Validation</strong>
+                  <span>Metrics and hypotheses</span>
                 </div>
                 <div class="phase-score">0/2</div>
               </div>
@@ -118,8 +114,8 @@
               <div class="phase-header">
                 <div class="phase-icon blue">4</div>
                 <div class="phase-info">
-                  <strong>Usuario</strong>
-                  <span>Persona y journey</span>
+                  <strong>User</strong>
+                  <span>Persona and journey</span>
                 </div>
                 <div class="phase-score">0/2</div>
               </div>
@@ -158,13 +154,13 @@
                   <label for="oneSentence">One-sentence Description <span class="char-counter"
                       data-max="200">0/200</span></label>
                   <input class="input" id="oneSentence" name="oneSentence" maxlength="200" required
-                    placeholder="App móvil para..." />
+                    placeholder="Mobile app for..." />
                 </div>
 
                 <div class="field">
                   <label for="productType">Product Type</label>
                   <select id="productType" name="productType" required>
-                    <option value="" selected disabled>Selecciona…</option>
+                    <option value="" selected disabled>Select…</option>
                     <option value="App">App</option>
                     <option value="Platform">Platform</option>
                     <option value="Service">Service</option>
@@ -195,8 +191,8 @@
                 <input type="hidden" name="status" value="Draft" />
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev" disabled>← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev" disabled>← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -213,24 +209,24 @@
                 <div class="field">
                   <label for="realWorldSituation">Real-world situation</label>
                   <textarea id="realWorldSituation" name="realWorldSituation" required
-                    placeholder="¿Qué está pasando hoy? ¿Quién lo vive? ¿Con qué frecuencia?"></textarea>
+                    placeholder="What is happening today? Who experiences it? How often?"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="whatGoesWrong">What goes wrong?</label>
                   <textarea id="whatGoesWrong" name="whatGoesWrong" required
-                    placeholder="¿Qué falla y qué consecuencias tiene? (tiempo, costos, frustración)"></textarea>
+                    placeholder="What fails and what are the consequences? (time, cost, frustration)"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="currentWorkarounds">Current workarounds</label>
                   <textarea id="currentWorkarounds" name="currentWorkarounds" required
-                    placeholder="¿Qué hacen hoy? ¿Qué herramientas usan? ¿Por qué no funciona?"></textarea>
+                    placeholder="What do they do today? What tools do they use? Why doesn't it work?"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -247,13 +243,13 @@
                 <div class="field">
                   <label for="userRoleContext">User role & context (not persona)</label>
                   <input class="input" id="userRoleContext" name="userRoleContext" required
-                    placeholder='Ej: "Técnicos aeronáuticos en hangar..."' />
+                    placeholder='E.g: "Aeronautical technicians in hangar..."' />
                 </div>
 
                 <div class="field">
                   <label for="tryingToAccomplish">What they're trying to accomplish</label>
                   <textarea id="tryingToAccomplish" name="tryingToAccomplish" required
-                    placeholder="Objetivo + por qué importa"></textarea>
+                    placeholder="Goal + why it matters"></textarea>
                 </div>
 
                 <div class="field">
@@ -270,12 +266,12 @@
                   </div>
                   <label for="researchBackingDetails" style="margin-top: 14px; display: block;">Details</label>
                   <textarea id="researchBackingDetails" name="researchBackingDetails" required
-                    placeholder="Key findings or quotes (incluye n= si aplica)"></textarea>
+                    placeholder="Key findings or quotes (include n= if applicable)"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -292,24 +288,24 @@
                 <div class="field">
                   <label for="desiredOutcome">Desired outcome (outcome + indicator)</label>
                   <textarea id="desiredOutcome" name="desiredOutcome" required
-                    placeholder="¿Cómo sería mejor? ¿Cómo sabría el usuario que funcionó?"></textarea>
+                    placeholder="How would it be better? How would the user know it worked?"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="whyUseThis">Why they'd use this</label>
                   <textarea id="whyUseThis" name="whyUseThis" required
-                    placeholder="Core value prop + cambio de comportamiento esperado"></textarea>
+                    placeholder="Core value prop + expected behavior change"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="productGoals">Product Goals (pick 2-3, bullets)</label>
                   <textarea id="productGoals" name="productGoals" required
-                    placeholder="• Reducir tiempo de X a Y&#10;• Aumentar visibilidad de Z"></textarea>
+                    placeholder="• Reduce time from X to Y&#10;• Increase visibility of Z"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -341,8 +337,8 @@
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -359,24 +355,24 @@
                 <div class="field">
                   <label for="technicalPlatformConstraints">Technical & Platform</label>
                   <textarea id="technicalPlatformConstraints" name="technicalPlatformConstraints" required
-                    placeholder="Limitaciones técnicas, devices, APIs, performance needs"></textarea>
+                    placeholder="Technical limitations, devices, APIs, performance needs"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="businessTimelineConstraints">Business & Timeline</label>
                   <textarea id="businessTimelineConstraints" name="businessTimelineConstraints" required
-                    placeholder="Budget, equipo, deadlines, stakeholders"></textarea>
+                    placeholder="Budget, team, deadlines, stakeholders"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="adoptionRisks">Adoption Risks</label>
                   <textarea id="adoptionRisks" name="adoptionRisks" required
-                    placeholder="Barriers, competencia, resistencia al cambio"></textarea>
+                    placeholder="Barriers, competition, resistance to change"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -393,12 +389,12 @@
                 <div class="field">
                   <label for="keyMetrics">Key Metrics (2-4)</label>
                   <textarea id="keyMetrics" name="keyMetrics" required
-                    placeholder="Task completion: 45% → 80% en Q1&#10;Weekly retention: Target 60%"></textarea>
+                    placeholder="Task completion: 45% → 80% in Q1&#10;Weekly retention: Target 60%"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -414,24 +410,24 @@
 
                 <div class="field">
                   <label for="facts">What you KNOW (facts) — include source</label>
-                  <textarea id="facts" name="facts" required placeholder="Hechos confirmados + fuente"></textarea>
+                  <textarea id="facts" name="facts" required placeholder="Confirmed facts + source"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="assumptions">What you ASSUME</label>
                   <textarea id="assumptions" name="assumptions" required
-                    placeholder="Hipótesis clave que podrían ser falsas"></textarea>
+                    placeholder="Key hypotheses that could be false"></textarea>
                 </div>
 
                 <div class="field">
                   <label for="needsValidation">What needs validation</label>
                   <input class="input" id="needsValidation" name="needsValidation" required
-                    placeholder="Qué validar antes/después de diseñar" />
+                    placeholder="What to validate before/after designing" />
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -448,13 +444,13 @@
                 <div class="field">
                   <label for="ageOccupation">Age range & Occupation</label>
                   <input class="input" id="ageOccupation" name="ageOccupation" required
-                    placeholder="25–35, Técnico de mantenimiento..." />
+                    placeholder="25–35, Maintenance technician..." />
                 </div>
 
                 <div class="field">
                   <label for="techProficiency">Tech proficiency</label>
                   <select id="techProficiency" name="techProficiency" required>
-                    <option value="" selected disabled>Selecciona…</option>
+                    <option value="" selected disabled>Select…</option>
                     <option value="Savvy">Savvy</option>
                     <option value="Comfortable">Comfortable</option>
                     <option value="Basic">Basic</option>
@@ -464,18 +460,18 @@
                 <div class="field">
                   <label for="mainMotivations">Main motivations</label>
                   <input class="input" id="mainMotivations" name="mainMotivations" required
-                    placeholder="Seguridad, rapidez, precisión..." />
+                    placeholder="Security, speed, precision..." />
                 </div>
 
                 <div class="field">
                   <label for="dailyRoutineSnapshot">Daily routine snapshot</label>
                   <textarea id="dailyRoutineSnapshot" name="dailyRoutineSnapshot" required
-                    placeholder="¿Cómo es un día típico donde aparece este problema?"></textarea>
+                    placeholder="What does a typical day look like when this problem occurs?"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
-                  <button type="button" class="btn" data-nav="next">Siguiente →</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
+                  <button type="button" class="btn" data-nav="next">Next →</button>
                 </div>
               </div>
 
@@ -493,7 +489,7 @@
                   <label for="numStages">Number of stages (default 3)</label>
                   <input class="input" type="number" id="numStages" name="numStages" min="3" max="5" value="3"
                     required />
-                  <p class="sub" style="margin-top:6px">Rango recomendado: 3–5.</p>
+                  <p class="sub" style="margin-top:6px">Recommended range: 3–5.</p>
                 </div>
 
                 <div id="stagesContainer"></div>
@@ -501,11 +497,11 @@
                 <div class="field">
                   <label for="opportunityAreas">Opportunity areas</label>
                   <textarea id="opportunityAreas" name="opportunityAreas" required
-                    placeholder="¿Dónde podemos mejorar la experiencia?"></textarea>
+                    placeholder="Where can we improve the experience?"></textarea>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
                   <button type="button" class="btn" data-nav="next">Generate →</button>
                 </div>
               </div>
@@ -521,27 +517,27 @@
                 </div>
 
                 <div class="actions">
-                  <button class="btn" type="submit" id="submitBtn" aria-label="Generar output UX">
-                    <span class="btn-content">Generar</span>
+                  <button class="btn" type="submit" id="submitBtn" aria-label="Generate UX output">
+                    <span class="btn-content">Generate</span>
                   </button>
-                  <button class="btn secondary" id="copyBtn" type="button" disabled aria-label="Copiar resultado">
+                  <button class="btn secondary" id="copyBtn" type="button" disabled aria-label="Copy result">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" />
                       <path d="M3 11V3a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="1.5"
                         stroke-linecap="round" />
                     </svg>
-                    <span class="btn-content">Copiar</span>
+                    <span class="btn-content">Copy</span>
                   </button>
                   <button class="btn secondary" id="downloadBtn" type="button" disabled
-                    aria-label="Descargar resultado">
+                    aria-label="Download result">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M8 2v8m0 0l3-3m-3 3L5 7m9 5H2" stroke="currentColor" stroke-width="1.5"
                         stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <span class="btn-content">Descargar</span>
+                    <span class="btn-content">Download</span>
                   </button>
                   <button class="btn secondary" id="copyJsonBtn" type="button" disabled
-                    aria-label="Copiar JSON para Figma">
+                    aria-label="Copy JSON for Figma">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M8 2L2 6l6 4 6-4-6-4z" stroke="currentColor" stroke-width="1.5"
                         stroke-linejoin="round" />
@@ -554,70 +550,70 @@
                 <!-- Notion Config -->
                 <div class="notion-config" id="notionConfig">
                   <div class="notion-header">
-                    <h3>Enviar a Notion</h3>
-                    <span class="notion-status" id="notionStatus">No configurado</span>
+                    <h3>Send to Notion</h3>
+                    <span class="notion-status" id="notionStatus">Not configured</span>
                   </div>
 
                   <div class="notion-steps">
                     <div class="notion-step">
                       <span class="step-num">1</span>
                       <div class="step-content">
-                        <strong>Crea una integración en Notion</strong>
-                        <p>Ve a <a href="https://www.notion.so/my-integrations"
-                            target="_blank">notion.so/my-integrations</a> → "New integration" → Copia el token</p>
+                        <strong>Create a Notion integration</strong>
+                        <p>Go to <a href="https://www.notion.so/my-integrations"
+                            target="_blank">notion.so/my-integrations</a> → "New integration" → Copy the token</p>
                       </div>
                     </div>
                     <div class="notion-step">
                       <span class="step-num">2</span>
                       <div class="step-content">
-                        <strong>Conecta la integración a tu página</strong>
-                        <p>Abre tu página en Notion → "..." → "Connections" → Agrega tu integración</p>
+                        <strong>Connect the integration to your page</strong>
+                        <p>Open your Notion page → "..." → "Connections" → Add your integration</p>
                       </div>
                     </div>
                     <div class="notion-step">
                       <span class="step-num">3</span>
                       <div class="step-content">
-                        <strong>Copia el ID de tu página</strong>
-                        <p>Está en la URL: notion.so/<strong>este-es-el-id</strong>?v=...</p>
+                        <strong>Copy your page ID</strong>
+                        <p>It's in the URL: notion.so/<strong>this-is-the-id</strong>?v=...</p>
                       </div>
                     </div>
                   </div>
 
                   <div class="notion-fields">
                     <div class="field">
-                      <label for="notionToken">Token de integración</label>
+                      <label for="notionToken">Integration token</label>
                       <input class="input" id="notionToken" name="notionToken" type="password"
                         placeholder="secret_xxxxxxxxx..." />
                     </div>
                     <div class="field">
-                      <label for="notionPageId">ID de página o base de datos</label>
+                      <label for="notionPageId">Page or database ID</label>
                       <input class="input" id="notionPageId" name="notionPageId" placeholder="abc123def456..." />
-                      <p class="hint">Pega el ID de la URL de tu página de Notion</p>
+                      <p class="hint">Paste the ID from your Notion page URL</p>
                     </div>
                     <input type="hidden" id="notionDatabaseId" name="notionDatabaseId" value="" />
                     <div class="field">
                       <label class="checkbox-item" style="width:auto;display:inline-flex">
                         <input type="checkbox" id="saveNotionCreds" />
-                        <span>Recordar configuración</span>
+                        <span>Remember configuration</span>
                       </label>
                     </div>
                   </div>
 
                   <div style="margin-top:14px">
-                    <button class="btn secondary" id="sendNotionBtn" type="button" disabled aria-label="Enviar a Notion"
+                    <button class="btn secondary" id="sendNotionBtn" type="button" disabled aria-label="Send to Notion"
                       style="width:100%;justify-content:center">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                         <path d="M12 2v20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                         <path d="M5 9l7-7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                           stroke-linejoin="round" />
                       </svg>
-                      <span class="btn-content">Enviar a Notion</span>
+                      <span class="btn-content">Send to Notion</span>
                     </button>
                   </div>
                 </div>
 
                 <div class="section-nav">
-                  <button type="button" class="btn secondary" data-nav="prev">← Anterior</button>
+                  <button type="button" class="btn secondary" data-nav="prev">← Previous</button>
                 </div>
               </div>
 
@@ -637,8 +633,8 @@
           <!-- Empty state -->
           <div class="output-empty">
             <div class="output-empty-icon">✦</div>
-            <strong>Tu brief aparece aquí</strong>
-            <p>Empieza a completar el formulario y este documento se construirá en tiempo real.</p>
+            <strong>Your brief appears here</strong>
+            <p>Start filling out the form and this document will be built in real time.</p>
           </div>
 
           <!-- Actual output (hidden until generated) -->

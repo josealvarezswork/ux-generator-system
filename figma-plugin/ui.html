@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ============================================
-       UX AI Generator — Figma Plugin UI
-       Light board aesthetic · Matching landing page
-       ============================================ */
-
     :root {
       --bg: #f5f5f4;
+      --bg-grid: #e8e8e6;
       --panel: #ffffff;
       --card: #ffffff;
       --card-alt: #fafaf9;
@@ -26,16 +23,26 @@
       --success-soft: rgba(22,163,74,.1);
       --warning: #d97706;
       --error: #dc2626;
-      --radius: 10px;
-      --radius-sm: 8px;
+      --card-yellow: #fef9c3;
+      --card-blue: #dbeafe;
+      --card-green: #dcfce7;
+      --card-orange: #ffedd5;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-lg: 20px;
+      --shadow: 0 4px 12px rgba(0,0,0,.08);
+      --font-ui: 'Inter', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg);
+      background-image: linear-gradient(var(--bg-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+      background-size: 24px 24px;
       color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font-ui);
       font-size: 12px;
       line-height: 1.5;
       padding: 14px;
@@ -54,42 +61,30 @@
 
     .header h1 {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: -0.5px;
       color: var(--text);
     }
 
-    .progress-badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-border);
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--accent);
-    }
-
-    .progress-badge.complete {
-      background: var(--success-soft);
-      border-color: rgba(22,163,74,.25);
-      color: var(--success);
-    }
-
-    /* Tabs */
-    .tabs-nav {
+    /* Mode Selector */
+    .mode-selector {
       display: flex;
-      gap: 3px;
+      gap: 4px;
       padding: 5px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       margin-bottom: 14px;
-      overflow-x: auto;
-      flex-wrap: wrap;
-      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      box-shadow: var(--shadow);
     }
 
-    .tab {
-      padding: 6px 10px;
+    .mode-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
       border: 1px solid transparent;
       background: transparent;
       color: var(--text-muted);
@@ -97,26 +92,123 @@
       cursor: pointer;
       font-size: 11px;
       font-weight: 600;
-      white-space: nowrap;
+      font-family: var(--font-ui);
       transition: all .15s;
     }
 
-    .tab:hover { background: var(--inset); color: var(--text); }
-    .tab.active { background: var(--accent-soft); border-color: var(--accent-border); color: var(--accent); }
-    .tab.complete { background: var(--success-soft) !important; border-color: rgba(22,163,74,.25) !important; color: var(--success) !important; }
+    .mode-btn:hover { background: var(--card-alt); color: var(--text); }
+    .mode-btn.active { background: var(--accent-soft); border-color: var(--accent-border); color: var(--accent); }
 
-    /* Cards */
-    .card {
+    /* Phase Navigation */
+    .phase-nav {
       background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .phase-progress-bar {
+      height: 4px;
+      background: var(--line);
+      position: relative;
+    }
+
+    .phase-progress-bar::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: var(--progress, 0%);
+      background: linear-gradient(90deg, #ca8a04, #16a34a, #ea580c, #2563eb);
+      transition: width 0.3s ease;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+    }
+
+    .current-phase {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phase-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    .phase-icon.yellow { background: var(--card-yellow); color: #ca8a04; }
+    .phase-icon.green { background: var(--card-green); color: #16a34a; }
+    .phase-icon.orange { background: var(--card-orange); color: #ea580c; }
+    .phase-icon.blue { background: var(--card-blue); color: #2563eb; }
+    .phase-icon.gradient { background: linear-gradient(135deg, var(--card-green), var(--card-blue)); color: var(--success); }
+
+    .phase-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .phase-count {
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-faint);
+      background: var(--bg);
+      padding: 3px 7px;
+      border-radius: 6px;
+    }
+
+    .phase-count.complete { background: var(--success-soft); color: var(--success); }
+
+    .stage-indicator {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      background: var(--card-alt);
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+
+    /* Form Panel */
+    .form-panel {
+      background: var(--panel);
+      border: 2px solid #facc15;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 20px rgba(250,204,21,0.15);
+      overflow: hidden;
+      display: none;
+    }
+
+    .form-panel.active { display: block; }
+
+    .panel-inner {
+      padding: 14px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--card-alt);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 14px;
-      display: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,.04);
     }
-
-    .card.active { display: block; }
-    .card.complete { border-color: rgba(22,163,74,.35); }
 
     .card-title {
       display: flex;
@@ -132,15 +224,15 @@
     }
 
     .req {
-      color: var(--text-faint);
+      color: #ca8a04;
       font-size: 9px;
-      font-weight: 600;
-      letter-spacing: .04em;
+      font-weight: 700;
+      letter-spacing: .06em;
       text-transform: uppercase;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(250,204,21,0.4);
       padding: 3px 8px;
       border-radius: 999px;
-      background: var(--card-alt);
+      background: var(--card-yellow);
     }
 
     /* Fields */
@@ -163,7 +255,7 @@
       border-radius: var(--radius-sm);
       padding: 9px 11px;
       font-size: 12px;
-      font-family: inherit;
+      font-family: var(--font-ui);
       outline: none;
       transition: border-color .15s, box-shadow .15s;
     }
@@ -248,7 +340,9 @@
       transition: all .15s;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
+      font-family: var(--font-ui);
     }
 
     .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
@@ -262,6 +356,9 @@
 
     .btn.secondary:hover:not(:disabled) { background: var(--card-alt); border-color: var(--line-strong); }
 
+    .btn.success { background: var(--success); }
+    .btn.success:hover:not(:disabled) { background: #15803d; }
+
     .btn svg { width: 13px; height: 13px; }
 
     /* Section nav */
@@ -274,7 +371,7 @@
       border-top: 1px solid var(--line);
     }
 
-    .section-nav .btn { flex: 1; justify-content: center; }
+    .section-nav .btn { flex: 1; }
 
     /* Actions */
     .actions {
@@ -304,6 +401,7 @@
       font-size: 11px;
       font-weight: 600;
       color: var(--text-muted);
+      font-family: var(--font-ui);
       transition: all .15s;
     }
 
@@ -324,46 +422,15 @@
     .status.success { background: var(--success-soft); color: var(--success); border: 1px solid rgba(22,163,74,.25); }
     .status.error { background: rgba(220,38,38,.08); color: var(--error); border: 1px solid rgba(220,38,38,.25); }
 
-    /* Mode Selector */
-    .mode-selector {
-      display: flex;
-      gap: 4px;
-      padding: 5px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      margin-bottom: 14px;
-      box-shadow: 0 1px 2px rgba(0,0,0,.04);
-    }
-
-    .mode-btn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 14px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 600;
-      transition: all .15s;
-    }
-
-    .mode-btn:hover { background: var(--card-alt); color: var(--text); }
-    .mode-btn.active { background: var(--accent-soft); border-color: var(--accent-border); color: var(--accent); }
-
     /* Paste Panel */
     .paste-panel {
       background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-lg);
       padding: 14px;
       margin-bottom: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      box-shadow: 0 4px 20px rgba(37,99,235,0.1);
+      display: none;
     }
 
     .paste-info {
@@ -400,7 +467,7 @@
       border-radius: var(--radius-sm);
       padding: 10px;
       font-size: 10px;
-      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-family: var(--font-mono);
       resize: vertical;
     }
 
@@ -416,6 +483,43 @@
       margin-top: 14px;
     }
 
+    /* Generate Panel */
+    .generate-panel {
+      background: var(--panel);
+      border: 2px solid var(--success);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 20px rgba(22,163,74,0.15);
+      text-align: center;
+      padding: 20px 14px;
+      display: none;
+    }
+
+    .generate-panel.active { display: block; }
+
+    .generate-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--card-green), var(--card-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin: 0 auto 14px;
+    }
+
+    .generate-panel h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .generate-panel > p {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-bottom: 16px;
+    }
+
     /* Utilities */
     .sub { color: var(--text-faint); font-size: 10px; margin-top: 4px; }
     .hidden { display: none !important; }
@@ -424,9 +528,6 @@
 <body>
   <div class="header">
     <h1>UX AI Generator</h1>
-    <div class="progress-badge" id="progressBadge">
-      <span class="progress-text">0/10</span>
-    </div>
   </div>
 
   <!-- Mode Selector -->
@@ -435,27 +536,27 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
       </svg>
-      Generar aqui
+      Generate here
     </button>
     <button type="button" class="mode-btn" data-mode="paste">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="9" y="9" width="13" height="13" rx="2"/>
         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
       </svg>
-      Pegar JSON
+      Paste JSON
     </button>
   </div>
 
-  <!-- Paste JSON Panel (hidden by default) -->
-  <div class="paste-panel" id="pastePanel" style="display: none;">
+  <!-- Paste JSON Panel -->
+  <div class="paste-panel" id="pastePanel">
     <div class="paste-info">
-      <p>Copia el JSON desde la webapp y pegalo aqui:</p>
-      <a href="https://josealvarezswork.github.io/uxgenerative/" target="_blank" class="webapp-link">Abrir webapp ↗</a>
+      <p>Paste JSON from the webapp:</p>
+      <a href="https://josealvarezswork.github.io/uxgenerative/" target="_blank" class="webapp-link">Open webapp</a>
     </div>
     <textarea id="jsonInput" class="json-textarea" placeholder='{"project_overview": {...}, "user_persona": {...}, ...}'></textarea>
     <div class="paste-actions">
       <div class="field" style="margin: 0;">
-        <label style="margin-bottom: 4px;">Tema</label>
+        <label style="margin-bottom: 4px;">Theme</label>
         <div class="theme-selector" style="margin: 0;">
           <button type="button" class="theme-option active" data-theme="dark">Dark</button>
           <button type="button" class="theme-option" data-theme="light">Light</button>
@@ -467,350 +568,388 @@
         <div class="theme-selector layout-selector" style="margin: 0;">
           <button type="button" class="theme-option layout-option active" data-layout="vertical">Vertical</button>
           <button type="button" class="theme-option layout-option" data-layout="horizontal">Horizontal</button>
-          <button type="button" class="theme-option layout-option" data-layout="separate">Separadas</button>
+          <button type="button" class="theme-option layout-option" data-layout="separate">Separate</button>
         </div>
       </div>
-      <button type="button" class="btn" id="generateFromJson" style="margin-top: 12px; width: 100%; justify-content: center;">
+      <button type="button" class="btn success" id="generateFromJson" style="margin-top: 12px; width: 100%;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
-        Generar en Figma
+        Generate in Figma
       </button>
     </div>
     <div id="pasteStatusArea"></div>
   </div>
 
-  <nav class="tabs-nav" id="tabsNav">
-    <button type="button" class="tab active" data-section="1">1</button>
-    <button type="button" class="tab" data-section="2">2</button>
-    <button type="button" class="tab" data-section="3">3</button>
-    <button type="button" class="tab" data-section="4">4</button>
-    <button type="button" class="tab" data-section="5">5</button>
-    <button type="button" class="tab" data-section="6">6</button>
-    <button type="button" class="tab" data-section="7">7</button>
-    <button type="button" class="tab" data-section="8">8</button>
-    <button type="button" class="tab" data-section="9">9</button>
-    <button type="button" class="tab" data-section="10">10</button>
-    <button type="button" class="tab" data-section="11">Gen</button>
+  <!-- Phase Navigation -->
+  <nav class="phase-nav" id="phaseNav">
+    <div class="phase-progress-bar" id="phaseProgressBar"></div>
+    <div class="phase-header">
+      <div class="current-phase" id="currentPhaseDisplay">
+        <span class="phase-icon yellow" id="currentPhaseIcon">D</span>
+        <span class="phase-label" id="currentPhaseLabel">Definition</span>
+        <span class="phase-count" id="currentPhaseCount">0/3</span>
+      </div>
+      <div class="stage-indicator" id="stageIndicator">Stage 1/4</div>
+    </div>
   </nav>
 
   <form id="uxForm" novalidate>
 
     <!-- 1. PROJECT IDENTITY -->
-    <div class="card active" data-section="1">
-      <div class="card-title">
-        <h2>1. Project Identity</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel active" data-section="1">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>1. Project Identity</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="projectName">Project Name</label>
-        <input class="input" id="projectName" name="projectName" required placeholder="Good Manual" />
-      </div>
+          <div class="field">
+            <label for="projectName">Project Name</label>
+            <input class="input" id="projectName" name="projectName" required placeholder="Good Manual" />
+          </div>
 
-      <div class="field">
-        <label for="oneSentence">One-sentence Description</label>
-        <input class="input" id="oneSentence" name="oneSentence" maxlength="200" required placeholder="App movil para..." />
-      </div>
+          <div class="field">
+            <label for="oneSentence">One-sentence Description</label>
+            <input class="input" id="oneSentence" name="oneSentence" maxlength="200" required placeholder="App movil para..." />
+          </div>
 
-      <div class="field">
-        <label for="productType">Product Type</label>
-        <select id="productType" name="productType" required>
-          <option value="" selected disabled>Selecciona...</option>
-          <option value="App">App</option>
-          <option value="Platform">Platform</option>
-          <option value="Service">Service</option>
-          <option value="Tool">Tool</option>
-          <option value="Hardware">Hardware</option>
-          <option value="Hybrid">Hybrid</option>
-        </select>
-      </div>
+          <div class="field">
+            <label for="productType">Product Type</label>
+            <select id="productType" name="productType" required>
+              <option value="" selected disabled>Select...</option>
+              <option value="App">App</option>
+              <option value="Platform">Platform</option>
+              <option value="Service">Service</option>
+              <option value="Tool">Tool</option>
+              <option value="Hardware">Hardware</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
 
-      <div class="field">
-        <label>Primary Platform(s)</label>
-        <div class="checkbox-grid">
-          <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Mobile" /><span>Mobile</span></label>
-          <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Web" /><span>Web</span></label>
-          <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Desktop" /><span>Desktop</span></label>
-          <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Tablet" /><span>Tablet</span></label>
-          <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Physical" /><span>Physical</span></label>
-          <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Hybrid" /><span>Hybrid</span></label>
+          <div class="field">
+            <label>Primary Platform(s)</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Mobile" /><span>Mobile</span></label>
+              <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Web" /><span>Web</span></label>
+              <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Desktop" /><span>Desktop</span></label>
+              <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Tablet" /><span>Tablet</span></label>
+              <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Physical" /><span>Physical</span></label>
+              <label class="checkbox-item"><input type="checkbox" name="primaryPlatforms" value="Hybrid" /><span>Hybrid</span></label>
+            </div>
+          </div>
+
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev" disabled>Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
         </div>
-      </div>
-
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev" disabled>Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
       </div>
     </div>
 
     <!-- 2. PROBLEM & CONTEXT -->
-    <div class="card" data-section="2">
-      <div class="card-title">
-        <h2>2. Problem & Context</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="2">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>2. Problem & Context</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="realWorldSituation">Real-world situation</label>
-        <textarea id="realWorldSituation" name="realWorldSituation" required placeholder="Que esta pasando hoy? Quien lo vive?"></textarea>
-      </div>
+          <div class="field">
+            <label for="realWorldSituation">Real-world situation</label>
+            <textarea id="realWorldSituation" name="realWorldSituation" required placeholder="What is happening today? Who experiences it?"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="whatGoesWrong">What goes wrong?</label>
-        <textarea id="whatGoesWrong" name="whatGoesWrong" required placeholder="Que falla y que consecuencias tiene?"></textarea>
-      </div>
+          <div class="field">
+            <label for="whatGoesWrong">What goes wrong?</label>
+            <textarea id="whatGoesWrong" name="whatGoesWrong" required placeholder="What fails and what are the consequences?"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="currentWorkarounds">Current workarounds</label>
-        <textarea id="currentWorkarounds" name="currentWorkarounds" required placeholder="Que hacen hoy? Que herramientas usan?"></textarea>
-      </div>
+          <div class="field">
+            <label for="currentWorkarounds">Current workarounds</label>
+            <textarea id="currentWorkarounds" name="currentWorkarounds" required placeholder="What do they do today? What tools do they use?"></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 3. USER EVIDENCE -->
-    <div class="card" data-section="3">
-      <div class="card-title">
-        <h2>3. User Evidence</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="3">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>3. User Evidence</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="userRoleContext">User role & context</label>
-        <input class="input" id="userRoleContext" name="userRoleContext" required placeholder='Ej: "Tecnicos aeronauticos en hangar..."' />
-      </div>
+          <div class="field">
+            <label for="userRoleContext">User role & context</label>
+            <input class="input" id="userRoleContext" name="userRoleContext" required placeholder='E.g: "Aeronautical technicians in hangar..."' />
+          </div>
 
-      <div class="field">
-        <label for="tryingToAccomplish">What they're trying to accomplish</label>
-        <textarea id="tryingToAccomplish" name="tryingToAccomplish" required placeholder="Objetivo + por que importa"></textarea>
-      </div>
+          <div class="field">
+            <label for="tryingToAccomplish">What they're trying to accomplish</label>
+            <textarea id="tryingToAccomplish" name="tryingToAccomplish" required placeholder="Goal + why it matters"></textarea>
+          </div>
 
-      <div class="field">
-        <label>Research backing</label>
-        <div class="radio-list">
-          <label class="radio"><input type="checkbox" name="researchBacking" value="User interviews" /><span>User interviews</span></label>
-          <label class="radio"><input type="checkbox" name="researchBacking" value="Surveys/Analytics" /><span>Surveys/Analytics</span></label>
-          <label class="radio"><input type="checkbox" name="researchBacking" value="Observation/Desk research" /><span>Observation/Desk</span></label>
-          <label class="radio"><input type="checkbox" name="researchBacking" value="No research yet" /><span>No research yet</span></label>
+          <div class="field">
+            <label>Research backing</label>
+            <div class="radio-list">
+              <label class="radio"><input type="checkbox" name="researchBacking" value="User interviews" /><span>User interviews</span></label>
+              <label class="radio"><input type="checkbox" name="researchBacking" value="Surveys/Analytics" /><span>Surveys/Analytics</span></label>
+              <label class="radio"><input type="checkbox" name="researchBacking" value="Observation/Desk research" /><span>Observation/Desk</span></label>
+              <label class="radio"><input type="checkbox" name="researchBacking" value="No research yet" /><span>No research yet</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="researchBackingDetails">Research Details</label>
+            <textarea id="researchBackingDetails" name="researchBackingDetails" required placeholder="Key findings or quotes"></textarea>
+          </div>
+
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
         </div>
-      </div>
-
-      <div class="field">
-        <label for="researchBackingDetails">Research Details</label>
-        <textarea id="researchBackingDetails" name="researchBackingDetails" required placeholder="Key findings or quotes"></textarea>
-      </div>
-
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
       </div>
     </div>
 
     <!-- 4. VALUE HYPOTHESIS -->
-    <div class="card" data-section="4">
-      <div class="card-title">
-        <h2>4. Value Hypothesis</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="4">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>4. Value Hypothesis</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="desiredOutcome">Desired outcome</label>
-        <textarea id="desiredOutcome" name="desiredOutcome" required placeholder="Como seria mejor? Como sabria el usuario que funciono?"></textarea>
-      </div>
+          <div class="field">
+            <label for="desiredOutcome">Desired outcome</label>
+            <textarea id="desiredOutcome" name="desiredOutcome" required placeholder="How would it be better? How would the user know it worked?"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="whyUseThis">Why they'd use this</label>
-        <textarea id="whyUseThis" name="whyUseThis" required placeholder="Core value prop + cambio de comportamiento esperado"></textarea>
-      </div>
+          <div class="field">
+            <label for="whyUseThis">Why they'd use this</label>
+            <textarea id="whyUseThis" name="whyUseThis" required placeholder="Core value prop + expected behavior change"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="productGoals">Product Goals (2-3 bullets)</label>
-        <textarea id="productGoals" name="productGoals" required placeholder="- Reducir tiempo de X a Y&#10;- Aumentar visibilidad de Z"></textarea>
-      </div>
+          <div class="field">
+            <label for="productGoals">Product Goals (2-3 bullets)</label>
+            <textarea id="productGoals" name="productGoals" required placeholder="- Reduce time from X to Y&#10;- Increase visibility of Z"></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 5. SCOPE -->
-    <div class="card" data-section="5">
-      <div class="card-title">
-        <h2>5. Scope</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="5">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>5. Scope</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="mustHaveFeatures">Must-Have Features (3-5)</label>
-        <textarea id="mustHaveFeatures" name="mustHaveFeatures" required placeholder="- ..."></textarea>
-      </div>
+          <div class="field">
+            <label for="mustHaveFeatures">Must-Have Features (3-5)</label>
+            <textarea id="mustHaveFeatures" name="mustHaveFeatures" required placeholder="- ..."></textarea>
+          </div>
 
-      <div class="field">
-        <label for="niceToHave">Nice-to-Have (optional)</label>
-        <textarea id="niceToHave" name="niceToHave" placeholder="- ..."></textarea>
-      </div>
+          <div class="field">
+            <label for="niceToHave">Nice-to-Have (optional)</label>
+            <textarea id="niceToHave" name="niceToHave" placeholder="- ..."></textarea>
+          </div>
 
-      <div class="field">
-        <label for="outOfScope">Out of Scope (optional)</label>
-        <textarea id="outOfScope" name="outOfScope" placeholder="- ..."></textarea>
-      </div>
+          <div class="field">
+            <label for="outOfScope">Out of Scope (optional)</label>
+            <textarea id="outOfScope" name="outOfScope" placeholder="- ..."></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 6. CONSTRAINTS -->
-    <div class="card" data-section="6">
-      <div class="card-title">
-        <h2>6. Constraints</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="6">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>6. Constraints</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="technicalPlatformConstraints">Technical & Platform</label>
-        <textarea id="technicalPlatformConstraints" name="technicalPlatformConstraints" required placeholder="Limitaciones tecnicas, devices, APIs"></textarea>
-      </div>
+          <div class="field">
+            <label for="technicalPlatformConstraints">Technical & Platform</label>
+            <textarea id="technicalPlatformConstraints" name="technicalPlatformConstraints" required placeholder="Technical limitations, devices, APIs"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="businessTimelineConstraints">Business & Timeline</label>
-        <textarea id="businessTimelineConstraints" name="businessTimelineConstraints" required placeholder="Budget, equipo, deadlines"></textarea>
-      </div>
+          <div class="field">
+            <label for="businessTimelineConstraints">Business & Timeline</label>
+            <textarea id="businessTimelineConstraints" name="businessTimelineConstraints" required placeholder="Budget, team, deadlines"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="adoptionRisks">Adoption Risks</label>
-        <textarea id="adoptionRisks" name="adoptionRisks" required placeholder="Barriers, competencia, resistencia"></textarea>
-      </div>
+          <div class="field">
+            <label for="adoptionRisks">Adoption Risks</label>
+            <textarea id="adoptionRisks" name="adoptionRisks" required placeholder="Barriers, competition, resistance"></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 7. SUCCESS METRICS -->
-    <div class="card" data-section="7">
-      <div class="card-title">
-        <h2>7. Success Metrics</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="7">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>7. Success Metrics</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="keyMetrics">Key Metrics (2-4)</label>
-        <textarea id="keyMetrics" name="keyMetrics" required placeholder="Task completion: 45% -> 80%&#10;Weekly retention: Target 60%"></textarea>
-      </div>
+          <div class="field">
+            <label for="keyMetrics">Key Metrics (2-4)</label>
+            <textarea id="keyMetrics" name="keyMetrics" required placeholder="Task completion: 45% -> 80%&#10;Weekly retention: Target 60%"></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 8. ASSUMPTIONS CHECK -->
-    <div class="card" data-section="8">
-      <div class="card-title">
-        <h2>8. Assumptions Check</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="8">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>8. Assumptions Check</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="facts">What you KNOW (facts)</label>
-        <textarea id="facts" name="facts" required placeholder="Hechos confirmados + fuente"></textarea>
-      </div>
+          <div class="field">
+            <label for="facts">What you KNOW (facts)</label>
+            <textarea id="facts" name="facts" required placeholder="Confirmed facts + source"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="assumptions">What you ASSUME</label>
-        <textarea id="assumptions" name="assumptions" required placeholder="Hipotesis clave"></textarea>
-      </div>
+          <div class="field">
+            <label for="assumptions">What you ASSUME</label>
+            <textarea id="assumptions" name="assumptions" required placeholder="Key hypotheses"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="needsValidation">What needs validation</label>
-        <input class="input" id="needsValidation" name="needsValidation" required placeholder="Que validar antes/despues" />
-      </div>
+          <div class="field">
+            <label for="needsValidation">What needs validation</label>
+            <input class="input" id="needsValidation" name="needsValidation" required placeholder="What to validate before/after" />
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 9. PERSONA ESSENTIALS -->
-    <div class="card" data-section="9">
-      <div class="card-title">
-        <h2>9. Persona Essentials</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="9">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>9. Persona Essentials</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="ageOccupation">Age range & Occupation</label>
-        <input class="input" id="ageOccupation" name="ageOccupation" required placeholder="25-35, Tecnico de mantenimiento..." />
-      </div>
+          <div class="field">
+            <label for="ageOccupation">Age range & Occupation</label>
+            <input class="input" id="ageOccupation" name="ageOccupation" required placeholder="25-35, Maintenance technician..." />
+          </div>
 
-      <div class="field">
-        <label for="techProficiency">Tech proficiency</label>
-        <select id="techProficiency" name="techProficiency" required>
-          <option value="" selected disabled>Selecciona...</option>
-          <option value="Savvy">Savvy</option>
-          <option value="Comfortable">Comfortable</option>
-          <option value="Basic">Basic</option>
-        </select>
-      </div>
+          <div class="field">
+            <label for="techProficiency">Tech proficiency</label>
+            <select id="techProficiency" name="techProficiency" required>
+              <option value="" selected disabled>Select...</option>
+              <option value="Savvy">Savvy</option>
+              <option value="Comfortable">Comfortable</option>
+              <option value="Basic">Basic</option>
+            </select>
+          </div>
 
-      <div class="field">
-        <label for="mainMotivations">Main motivations</label>
-        <input class="input" id="mainMotivations" name="mainMotivations" required placeholder="Seguridad, rapidez, precision..." />
-      </div>
+          <div class="field">
+            <label for="mainMotivations">Main motivations</label>
+            <input class="input" id="mainMotivations" name="mainMotivations" required placeholder="Security, speed, precision..." />
+          </div>
 
-      <div class="field">
-        <label for="dailyRoutineSnapshot">Daily routine snapshot</label>
-        <textarea id="dailyRoutineSnapshot" name="dailyRoutineSnapshot" required placeholder="Como es un dia tipico?"></textarea>
-      </div>
+          <div class="field">
+            <label for="dailyRoutineSnapshot">Daily routine snapshot</label>
+            <textarea id="dailyRoutineSnapshot" name="dailyRoutineSnapshot" required placeholder="What does a typical day look like?"></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Siguiente</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 10. JOURNEY STAGES -->
-    <div class="card" data-section="10">
-      <div class="card-title">
-        <h2>10. Journey Stages</h2>
-        <span class="req">Required</span>
-      </div>
+    <div class="form-panel" data-section="10">
+      <div class="panel-inner">
+        <div class="card">
+          <div class="card-title">
+            <h2>10. Journey Stages</h2>
+            <span class="req">Required</span>
+          </div>
 
-      <div class="field">
-        <label for="numStages">Number of stages (3-5)</label>
-        <input class="input" type="number" id="numStages" name="numStages" min="3" max="5" value="3" required />
-      </div>
+          <div class="field">
+            <label for="numStages">Number of stages (3-5)</label>
+            <input class="input" type="number" id="numStages" name="numStages" min="3" max="5" value="3" required />
+          </div>
 
-      <div id="stagesContainer"></div>
+          <div id="stagesContainer"></div>
 
-      <div class="field">
-        <label for="opportunityAreas">Opportunity areas</label>
-        <textarea id="opportunityAreas" name="opportunityAreas" required placeholder="Donde podemos mejorar la experiencia?"></textarea>
-      </div>
+          <div class="field">
+            <label for="opportunityAreas">Opportunity areas</label>
+            <textarea id="opportunityAreas" name="opportunityAreas" required placeholder="Where can we improve the experience?"></textarea>
+          </div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
-        <button type="button" class="btn" data-nav="next">Generate</button>
+          <div class="section-nav">
+            <button type="button" class="btn secondary" data-nav="prev">Previous</button>
+            <button type="button" class="btn" data-nav="next">Generate</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 11. GENERATE -->
-    <div class="card" data-section="11">
-      <div class="card-title">
-        <h2>Generate & Create</h2>
-        <span class="req">Final Step</span>
-      </div>
+    <div class="generate-panel" data-section="11">
+      <div class="generate-icon">G</div>
+      <h3>Ready to Generate</h3>
+      <p>All sections complete. Generate your UX brief in Figma.</p>
 
-      <div class="field">
+      <div class="field" style="text-align: left;">
         <label>Theme</label>
         <div class="theme-selector">
           <button type="button" class="theme-option active" data-theme="dark">Dark</button>
@@ -819,28 +958,28 @@
         </div>
       </div>
 
-      <div class="field">
+      <div class="field" style="text-align: left;">
         <label>Layout</label>
         <div class="theme-selector layout-selector">
           <button type="button" class="theme-option layout-option active" data-layout="vertical">Vertical</button>
           <button type="button" class="theme-option layout-option" data-layout="horizontal">Horizontal</button>
-          <button type="button" class="theme-option layout-option" data-layout="separate">Separadas</button>
+          <button type="button" class="theme-option layout-option" data-layout="separate">Separate</button>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn" type="submit" id="submitBtn">
+        <button class="btn success" type="submit" id="submitBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
-          Generar en Figma
+          Generate in Figma
         </button>
       </div>
 
       <div id="statusArea"></div>
 
-      <div class="section-nav">
-        <button type="button" class="btn secondary" data-nav="prev">Anterior</button>
+      <div class="section-nav" style="border: 0; padding-top: 14px;">
+        <button type="button" class="btn secondary" data-nav="prev">Previous</button>
       </div>
     </div>
 
@@ -862,9 +1001,8 @@
     // =======================
     const modeSelector = document.getElementById('modeSelector');
     const pastePanel = document.getElementById('pastePanel');
-    const tabsNav = document.getElementById('tabsNav');
+    const phaseNav = document.getElementById('phaseNav');
     const formElement = document.getElementById('uxForm');
-    const progressBadge = document.getElementById('progressBadge');
 
     modeSelector.addEventListener('click', (e) => {
       const btn = e.target.closest('.mode-btn');
@@ -873,21 +1011,17 @@
       const mode = btn.dataset.mode;
       currentMode = mode;
 
-      // Update active button
       document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      // Show/hide panels
       if (mode === 'paste') {
         pastePanel.style.display = 'block';
-        tabsNav.style.display = 'none';
+        phaseNav.style.display = 'none';
         formElement.style.display = 'none';
-        progressBadge.style.display = 'none';
       } else {
         pastePanel.style.display = 'none';
-        tabsNav.style.display = 'flex';
+        phaseNav.style.display = 'block';
         formElement.style.display = 'block';
-        progressBadge.style.display = 'block';
       }
     });
 
@@ -898,7 +1032,6 @@
     const generateFromJsonBtn = document.getElementById('generateFromJson');
     const pasteStatusArea = document.getElementById('pasteStatusArea');
 
-    // Theme selector in paste panel
     document.querySelectorAll('.paste-panel .theme-option:not(.layout-option)').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.paste-panel .theme-option:not(.layout-option)').forEach(b => b.classList.remove('active'));
@@ -907,7 +1040,6 @@
       });
     });
 
-    // Layout selector in paste panel
     document.querySelectorAll('.paste-panel .layout-option').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.paste-panel .layout-option').forEach(b => b.classList.remove('active'));
@@ -920,14 +1052,14 @@
       const jsonText = jsonInput.value.trim();
 
       if (!jsonText) {
-        pasteStatusArea.innerHTML = '<div class="status error">Pega el JSON primero</div>';
+        pasteStatusArea.innerHTML = '<div class="status error">Paste the JSON first</div>';
         return;
       }
 
       try {
         const data = JSON.parse(jsonText);
 
-        pasteStatusArea.innerHTML = '<div class="status loading">Creando frames...</div>';
+        pasteStatusArea.innerHTML = '<div class="status loading">Creating frames...</div>';
         generateFromJsonBtn.disabled = true;
 
         parent.postMessage({
@@ -939,7 +1071,7 @@
         }, '*');
 
       } catch (err) {
-        pasteStatusArea.innerHTML = '<div class="status error">JSON invalido: ' + err.message + '</div>';
+        pasteStatusArea.innerHTML = '<div class="status error">Invalid JSON: ' + err.message + '</div>';
       }
     });
 
@@ -952,38 +1084,75 @@
     const numStagesInput = document.getElementById('numStages');
 
     // =======================
+    // Phase Configuration
+    // =======================
+    const phases = {
+      definition: { sections: [1, 2, 3], total: 3, label: 'Definition', icon: 'D', color: 'yellow', index: 1 },
+      strategy: { sections: [4, 5, 6], total: 3, label: 'Strategy', icon: 'S', color: 'green', index: 2 },
+      validation: { sections: [7, 8], total: 2, label: 'Validation', icon: 'V', color: 'orange', index: 3 },
+      user: { sections: [9, 10], total: 2, label: 'User', icon: 'U', color: 'blue', index: 4 },
+      generate: { sections: [11], total: 0, label: 'Generate', icon: 'G', color: 'gradient', index: 5 }
+    };
+
+    const phaseOrder = ['definition', 'strategy', 'validation', 'user', 'generate'];
+
+    function getPhaseForSection(section) {
+      for (const [phase, config] of Object.entries(phases)) {
+        if (config.sections.includes(section)) return phase;
+      }
+      return null;
+    }
+
+    function updatePhaseDisplay(phaseName) {
+      const phase = phases[phaseName];
+      const iconEl = document.getElementById('currentPhaseIcon');
+      const labelEl = document.getElementById('currentPhaseLabel');
+      const countEl = document.getElementById('currentPhaseCount');
+      const stageEl = document.getElementById('stageIndicator');
+
+      // Update icon
+      iconEl.textContent = phase.icon;
+      iconEl.className = 'phase-icon ' + phase.color;
+
+      // Update label
+      labelEl.textContent = phase.label;
+
+      // Update count (hide for generate)
+      if (phaseName === 'generate') {
+        countEl.style.display = 'none';
+        stageEl.textContent = 'Ready!';
+      } else {
+        countEl.style.display = 'inline';
+        stageEl.textContent = `Stage ${phase.index}/4`;
+      }
+
+      // Update progress bar
+      const progressBar = document.getElementById('phaseProgressBar');
+      const progressPercent = ((phase.index - 1) / 4) * 100;
+      progressBar.style.setProperty('--progress', progressPercent + '%');
+    }
+
+    // =======================
     // Tab Navigation
     // =======================
     function switchTab(section) {
       if (section < 1 || section > 11) return;
 
       currentSection = section;
+      const currentPhaseName = getPhaseForSection(section);
 
-      // Update cards
-      document.querySelectorAll('.card[data-section]').forEach(card => {
-        card.classList.toggle('active', parseInt(card.dataset.section) === section);
+      document.querySelectorAll('.form-panel[data-section], .generate-panel[data-section]').forEach(panel => {
+        panel.classList.toggle('active', parseInt(panel.dataset.section) === section);
       });
 
-      // Update tabs
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.toggle('active', parseInt(tab.dataset.section) === section);
-      });
+      updatePhaseDisplay(currentPhaseName);
+      updateProgress();
 
-      // Update prev/next buttons
       document.querySelectorAll('[data-nav="prev"]').forEach(btn => {
         btn.disabled = section === 1;
       });
     }
 
-    // Tab click handler
-    tabsNav.addEventListener('click', (e) => {
-      const tab = e.target.closest('.tab');
-      if (tab) {
-        switchTab(parseInt(tab.dataset.section));
-      }
-    });
-
-    // Navigation buttons
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-nav]');
       if (!btn) return;
@@ -1045,35 +1214,55 @@
     // =======================
     // Progress Tracking
     // =======================
+    function isSectionComplete(sectionNum) {
+      const panel = document.querySelector(`.form-panel[data-section="${sectionNum}"]`);
+      if (!panel) return false;
+
+      const requiredInputs = panel.querySelectorAll('[required]');
+      if (requiredInputs.length === 0) return false;
+
+      return Array.from(requiredInputs).every(input => {
+        if (input.type === 'checkbox') {
+          const checkboxes = panel.querySelectorAll(`[name="${input.name}"]`);
+          return Array.from(checkboxes).some(cb => cb.checked);
+        }
+        return input.value.trim() !== '';
+      });
+    }
+
     function updateProgress() {
-      let completed = 0;
+      let totalCompleted = 0;
+      const phaseProgress = {};
 
-      for (let i = 1; i <= totalSections; i++) {
-        const card = document.querySelector(`.card[data-section="${i}"]`);
-        const tab = document.querySelector(`.tab[data-section="${i}"]`);
-        if (!card || !tab) continue;
+      // Calculate progress for each phase
+      for (const [phaseName, config] of Object.entries(phases)) {
+        if (phaseName === 'generate') continue;
 
-        const requiredInputs = card.querySelectorAll('[required]');
-        const allFilled = Array.from(requiredInputs).every(input => {
-          if (input.type === 'checkbox') {
-            const checkboxes = card.querySelectorAll(`[name="${input.name}"]`);
-            return Array.from(checkboxes).some(cb => cb.checked);
+        let phaseCompleted = 0;
+        config.sections.forEach(sectionNum => {
+          if (isSectionComplete(sectionNum)) {
+            phaseCompleted++;
+            totalCompleted++;
           }
-          return input.value.trim() !== '';
         });
 
-        if (allFilled && requiredInputs.length > 0) {
-          completed++;
-          card.classList.add('complete');
-          tab.classList.add('complete');
-        } else {
-          card.classList.remove('complete');
-          tab.classList.remove('complete');
-        }
+        phaseProgress[phaseName] = phaseCompleted;
       }
 
-      progressBadge.querySelector('.progress-text').textContent = `${completed}/${totalSections}`;
-      progressBadge.classList.toggle('complete', completed === totalSections);
+      // Update current phase count display
+      const currentPhaseName = getPhaseForSection(currentSection);
+      const countEl = document.getElementById('currentPhaseCount');
+      if (currentPhaseName && currentPhaseName !== 'generate') {
+        const phase = phases[currentPhaseName];
+        const completed = phaseProgress[currentPhaseName] || 0;
+        countEl.textContent = `${completed}/${phase.total}`;
+        countEl.classList.toggle('complete', completed === phase.total);
+      }
+
+      // Update progress bar based on total completion
+      const progressBar = document.getElementById('phaseProgressBar');
+      const progressPercent = (totalCompleted / totalSections) * 100;
+      progressBar.style.setProperty('--progress', progressPercent + '%');
     }
 
     form.addEventListener('input', updateProgress);
@@ -1098,10 +1287,9 @@
 
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      showStatus('Generando UX Brief con AI...', 'loading');
+      showStatus('Generating UX Brief with AI...', 'loading');
 
       try {
-        // Collect form data
         const formData = new FormData(form);
         const briefData = {};
 
@@ -1114,7 +1302,6 @@
           }
         }
 
-        // Collect stages
         const numStages = parseInt(briefData.numStages) || 3;
         briefData.stages = [];
         for (let i = 1; i <= numStages; i++) {
@@ -1128,7 +1315,6 @@
 
         console.log('Sending to API:', briefData);
 
-        // Call API
         const response = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1143,7 +1329,6 @@
         const apiResponse = await response.json();
         console.log('API Response:', apiResponse);
 
-        // Parse the AI-generated JSON from result.result
         let parsedData;
         try {
           let jsonString = apiResponse.result || '{}';
@@ -1158,9 +1343,8 @@
         }
 
         console.log('Parsed data:', parsedData);
-        showStatus('Creando frames en Figma...', 'loading');
+        showStatus('Creating frames in Figma...', 'loading');
 
-        // Send to Figma plugin
         parent.postMessage({
           pluginMessage: {
             type: 'generate',
@@ -1185,10 +1369,10 @@
 
       if (msg.type === 'done') {
         if (currentMode === 'paste') {
-          pasteStatusArea.innerHTML = '<div class="status success">Frames creados!</div>';
+          pasteStatusArea.innerHTML = '<div class="status success">Frames created!</div>';
           generateFromJsonBtn.disabled = false;
         } else {
-          showStatus('Frames creados exitosamente!', 'success');
+          showStatus('Frames created successfully!', 'success');
           document.getElementById('submitBtn').disabled = false;
         }
       } else if (msg.type === 'error') {
@@ -1208,38 +1392,37 @@
     function loadExample() {
       const example = {
         projectName: 'Good Manual',
-        oneSentence: 'App movil para tecnicos aeronauticos que digitaliza manuales de mantenimiento',
+        oneSentence: 'Mobile app for aeronautical technicians that digitizes maintenance manuals',
         productType: 'App',
         primaryPlatforms: ['Mobile', 'Tablet'],
-        realWorldSituation: 'Tecnicos aeronauticos en hangares consultan manuales fisicos de 500+ paginas durante inspecciones',
-        whatGoesWrong: 'Perdida de tiempo buscando procedimientos, errores por informacion desactualizada',
-        currentWorkarounds: 'PDFs en tablet, fotos de paginas, notas en papel',
-        userRoleContext: 'Tecnicos de mantenimiento aeronautico con 5-15 anos de experiencia',
-        tryingToAccomplish: 'Completar inspecciones de forma rapida, segura y documentada',
+        realWorldSituation: 'Aeronautical technicians in hangars consult physical manuals of 500+ pages during inspections',
+        whatGoesWrong: 'Wasted time looking for procedures, errors due to outdated info',
+        currentWorkarounds: 'PDFs on tablet, photos of pages, paper notes',
+        userRoleContext: 'Aeronautic maintenance technicians with 5-15 years of experience',
+        tryingToAccomplish: 'Complete inspections quickly, safely, and documented',
         researchBacking: ['User interviews'],
-        researchBackingDetails: 'Entrevistas con 12 tecnicos, promedio 45 min buscando info por turno',
-        desiredOutcome: 'Reducir tiempo de busqueda de 45 min a 5 min por turno',
-        whyUseThis: 'Acceso inmediato a procedimientos con busqueda inteligente',
-        productGoals: '- Reducir tiempo de busqueda 90%\n- Eliminar errores por info desactualizada\n- Mejorar trazabilidad',
-        mustHaveFeatures: '- Busqueda por voz\n- Modo offline\n- Alertas de actualizaciones\n- Checklist digital',
-        niceToHave: '- Realidad aumentada\n- Colaboracion en tiempo real',
-        outOfScope: '- Gestion de inventario\n- Facturacion',
-        technicalPlatformConstraints: 'iOS/Android, funcionar offline, sincronizar con sistema existente',
-        businessTimelineConstraints: 'MVP en 4 meses, presupuesto limitado, equipo de 3',
-        adoptionRisks: 'Resistencia de tecnicos senior, dependencia de conectividad',
-        keyMetrics: 'Tiempo de busqueda: 45min -> 5min\nAdopcion: 80% en 6 meses\nErrores: -50%',
-        facts: 'Promedio 45 min/turno buscando info (medido en 3 hangares)',
-        assumptions: 'Tecnicos prefieren digital si es mas rapido que papel',
-        needsValidation: 'Usabilidad con guantes, rendimiento offline',
-        ageOccupation: '35-55, Tecnico de mantenimiento aeronautico',
+        researchBackingDetails: 'Interviews with 12 technicians, average 45 min looking for info per shift',
+        desiredOutcome: 'Reduce search time from 45 min to 5 min per shift',
+        whyUseThis: 'Immediate access to procedures with smart search',
+        productGoals: '- Reduce search time by 90%\n- Eliminate outdated info errors\n- Improve traceability',
+        mustHaveFeatures: '- Voice search\n- Offline mode\n- Update alerts\n- Digital checklist',
+        niceToHave: '- Augmented reality\n- Real-time collaboration',
+        outOfScope: '- Inventory management\n- Billing',
+        technicalPlatformConstraints: 'iOS/Android, work offline, sync with existing system',
+        businessTimelineConstraints: 'MVP in 4 months, limited budget, team of 3',
+        adoptionRisks: 'Resistance from senior techs, connectivity dependency',
+        keyMetrics: 'Search time: 45min -> 5min\nAdoption: 80% in 6 months\nErrors: -50%',
+        facts: 'Average 45 min/shift looking for info (measured in 3 hangars)',
+        assumptions: 'Techs prefer digital if it is faster than paper',
+        needsValidation: 'Usability with gloves, offline performance',
+        ageOccupation: '35-55, Aeronautic maintenance technician',
         techProficiency: 'Comfortable',
-        mainMotivations: 'Seguridad, eficiencia, precision',
-        dailyRoutineSnapshot: 'Llega 6am, revisa tareas asignadas, inspecciona aeronave, documenta hallazgos',
+        mainMotivations: 'Safety, efficiency, precision',
+        dailyRoutineSnapshot: 'Arrives at 6am, checks assigned tasks, inspects aircraft, documents findings',
         numStages: '3',
-        opportunityAreas: 'Busqueda predictiva, integracion con sistemas de la aerolinea'
+        opportunityAreas: 'Predictive search, integration with airline systems'
       };
 
-      // Fill form
       Object.entries(example).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           value.forEach(v => {
@@ -1254,18 +1437,16 @@
 
       renderStages();
 
-      // Fill stage data
-      form.querySelector('[name="stage1Name"]').value = 'Preparacion';
-      form.querySelector('[name="stage1Action"]').value = 'Revisa tareas asignadas y recopila herramientas';
-      form.querySelector('[name="stage2Name"]').value = 'Inspeccion';
-      form.querySelector('[name="stage2Action"]').value = 'Ejecuta procedimientos consultando manual';
-      form.querySelector('[name="stage3Name"]').value = 'Documentacion';
-      form.querySelector('[name="stage3Action"]').value = 'Registra hallazgos y firma completado';
+      form.querySelector('[name="stage1Name"]').value = 'Preparation';
+      form.querySelector('[name="stage1Action"]').value = 'Reviews assigned tasks and gathers tools';
+      form.querySelector('[name="stage2Name"]').value = 'Inspection';
+      form.querySelector('[name="stage2Action"]').value = 'Executes procedures consulting manual';
+      form.querySelector('[name="stage3Name"]').value = 'Documentation';
+      form.querySelector('[name="stage3Action"]').value = 'Records findings and signs completed';
 
       updateProgress();
     }
 
-    // Keyboard shortcut to load example (Cmd/Ctrl + E)
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'e') {
         e.preventDefault();
@@ -1273,7 +1454,8 @@
       }
     });
 
-    // Initial progress update
+    // Initialize
+    updatePhaseDisplay('definition');
     updateProgress();
   </script>
 </body>

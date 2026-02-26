@@ -31,8 +31,7 @@ const notionPageIdInput = document.getElementById("notionPageId");
 const saveNotionCreds = document.getElementById("saveNotionCreds");
 const output = document.getElementById("output");
 const progressBadge = document.getElementById("progressBadge");
-const loadExampleBtn = document.getElementById("loadExampleBtn");
-const clearDraftBtn = document.getElementById("clearDraftBtn");
+const exampleToggleBtn = document.getElementById("exampleToggleBtn");
 const shortcutsHint = document.getElementById("shortcutsHint");
 const numStagesInput = document.getElementById("numStages");
 const stagesContainer = document.getElementById("stagesContainer");
@@ -44,52 +43,52 @@ const sidebarNav = document.getElementById("sidebarNav"); console.log('DOM eleme
 
 const EXAMPLE_DATA = {
   projectName: "MediTrack",
-  oneSentence: "App móvil para que pacientes con enfermedades crónicas registren síntomas y compartan datos con médicos en tiempo real.",
+  oneSentence: "Mobile app for chronic disease patients to record symptoms and share data with doctors in real time.",
   productType: "App",
   primaryPlatforms: ["Mobile", "Web"],
-  realWorldSituation: "Pacientes con diabetes, asma o hipertensión deben registrar manualmente síntomas en papel o apps fragmentadas. Médicos no tienen acceso a datos consistentes.",
-  whatGoesWrong: "Datos incompletos → diagnósticos menos precisos. Pacientes olvidan registros → seguimiento inefectivo. Cambio de médico = perder historial.",
-  currentWorkarounds: "WhatsApp, llamadas, Excel. Cada médico pide datos diferentes. Duplicación de esfuerzos.",
-  userRoleContext: "Pacientes adultos (35-65) con enfermedades crónicas, con smartphone básico. Algunos sin mucha literacy digital.",
-  tryingToAccomplish: "Tener un lugar centralizado donde registrar síntomas y compartir con médico sin perder datos.",
+  realWorldSituation: "Patients with diabetes, asthma, or hypertension must manually record symptoms on paper or fragmented apps. Doctors lack access to consistent data.",
+  whatGoesWrong: "Incomplete data → less accurate diagnoses. Patients forget logs → ineffective tracking. Changing doctors = losing history.",
+  currentWorkarounds: "WhatsApp, calls, Excel. Every doctor asks for different data. Duplication of effort.",
+  userRoleContext: "Adult patients (35-65) with chronic diseases, basic smartphone users. Some with low digital literacy.",
+  tryingToAccomplish: "Have a centralized place to record symptoms and share with doctor without losing data.",
   researchBacking: ["User interviews"],
-  researchBackingDetails: "n=12 entrevistas con pacientes diabéticos en CDMX. 83% usa WhatsApp para compartir datos con médicos. 91% pierde registros al cambiar de clínica.",
-  desiredOutcome: "Paciente registra síntoma → App notifica al médico automáticamente → Médico ve tendencias → Menos visitas innecesarias.",
-  whyUseThis: "Deja de ser paciente pasivo a active manager de su salud. Médico tiene datos reales, no recuerdos del paciente.",
-  productGoals: "• Reducir tiempo de consulta en 30% (menos explicaciones)\n• Aumentar adherencia al tratamiento en 45% (recordatorios + datos\n• Mejorar precision diagnóstica (datos vs intuición)",
-  mustHaveFeatures: "• Dashboard con síntomas últimos 30 días\n• Exportar PDF para llevar a médico\n• Recordatorios diarios automáticos\n• Historial completo (búsqueda por fecha/síntoma)",
-  niceToHave: "• Gráficos de tendencias\n• Compartir acceso a familiares",
-  outOfScope: "• Diagnóstico automático\n• Integración con historiales de hospitales",
-  technicalPlatformConstraints: "iOS 12+, Android 8+. Sin requiere acceso a red (almacenamiento local). Storage máximo 50MB.",
-  businessTimelineConstraints: "MVP en 4 meses. Equipo: 2 devs, 1 designer, 1 PM. Budget: $80k.",
-  adoptionRisks: "Regulación médica (telemedicina requiere aprobación). Competencia: existe Google Health pero no para crónicas. Desconfianza de pacientes en apps de salud.",
-  keyMetrics: "Tasa de uso semanal: Target 70%\nPromedio registros/semana: Target 4+",
-  facts: "n=12 entrevistas confirmó 'paciente necesita lugar centralizado' - Fuente: Research Desk 2025\nExisten 2M diabéticos en México - Fuente: IMSS",
-  assumptions: "Pacientes usarán app si hay recordatorios\nMédicos adoptarán app si les ahorra 10+ min/consulta",
-  needsValidation: "¿Médicos realmente abren la app durante consulta?",
-  ageOccupation: "35–65, Pacientes con enfermedades crónicas (diabetes, asma, hipertensión)",
+  researchBackingDetails: "n=12 interviews with diabetic patients. 83% use WhatsApp to share data with doctors. 91% lose logs when changing clinics.",
+  desiredOutcome: "Patient records symptom → App automatically notifies doctor → Doctor sees trends → Fewer unnecessary visits.",
+  whyUseThis: "Stop being a passive patient to an active health manager. Doctor has real data, not patient memories.",
+  productGoals: "• Reduce consultation time by 30% (fewer explanations)\n• Increase treatment adherence by 45% (reminders + data)\n• Improve diagnostic precision (data vs intuition)",
+  mustHaveFeatures: "• Dashboard with symptoms from last 30 days\n• Export PDF to take to doctor\n• Automatic daily reminders\n• Complete history (search by date/symptom)",
+  niceToHave: "• Trend charts\n• Share access with family members",
+  outOfScope: "• Automatic diagnosis\n• Integration with hospital records",
+  technicalPlatformConstraints: "iOS 12+, Android 8+. Does not require network access (local storage). Max storage 50MB.",
+  businessTimelineConstraints: "MVP in 4 months. Team: 2 devs, 1 designer, 1 PM. Budget: $80k.",
+  adoptionRisks: "Medical regulation (telemedicine requires approval). Competition: Google Health exists but not for chronic diseases. Patient distrust in health apps.",
+  keyMetrics: "Weekly usage rate: Target 70%\nAverage logs/week: Target 4+",
+  facts: "n=12 interviews confirmed 'patient needs centralized place' - Source: Research Desk 2025\nThere are 2M diabetics in Mexico - Source: IMSS",
+  assumptions: "Patients will use app if there are reminders\nDoctors will adopt app if it saves them 10+ min/consultation",
+  needsValidation: "Do doctors actually open the app during a consultation?",
+  ageOccupation: "35–65, Patients with chronic diseases (diabetes, asthma, hypertension)",
   techProficiency: "Basic",
-  mainMotivations: "Salud, organización, no perder información, confianza en médico",
-  dailyRoutineSnapshot: "7am: Despierta, toma medicinas. 12pm: Registra cómo se siente. 6pm: Revisa si tiene recordatorio de seguimiento. Si no se siente bien, abre app para datos históricos antes de llamar al médico.",
+  mainMotivations: "Health, organization, not losing info, trust in doctor",
+  dailyRoutineSnapshot: "7am: Wakes up, takes medicines. 12pm: Records how they feel. 6pm: Checks if they have a follow-up reminder. If not feeling well, opens app for historical data before calling doctor.",
   status: "Draft",
   journeyStages: [
     {
       index: 1,
       nameTimeline: "Pre-diagnosis",
-      whatHappens: "Paciente siente síntomas pero no sabe si es 'normal'. Busca en Google, asusta."
+      whatHappens: "Patient feels symptoms but doesn't know if it's 'normal'. Searches Google, gets scared."
     },
     {
       index: 2,
       nameTimeline: "Initial Visit",
-      whatHappens: "Médico hace preguntas, paciente no recuerda bien cuándo empezó. Receta medicinas pero sin plan claro."
+      whatHappens: "Doctor asks questions, patient doesn't remember well when it started. Prescribes medicines but no clear plan."
     },
     {
       index: 3,
       nameTimeline: "Ongoing Management",
-      whatHappens: "Paciente toma medicinas irregularmente. Olvida síntomas para siguiente cita. Médico no tiene baseline para ajustar."
+      whatHappens: "Patient takes medicines irregularly. Forgets symptoms for next appointment. Doctor has no baseline to adjust."
     }
   ],
-  opportunityAreas: "Registrar síntomas ANTES de ir al médico (no durante)\nCompartir automáticamente histórico (no 'explique cómo se sintió')\nRecordatorios para no olvidar tomar medicinas",
+  opportunityAreas: "Record symptoms BEFORE going to doctor (not during)\nAutomatically share history (no 'explain how you felt')\nReminders to not forget taking medicines",
 };
 
 // ============================================================================
@@ -128,7 +127,7 @@ function loadDraft() {
     try {
       const data = JSON.parse(saved);
       populateForm(data);
-      showStatus("✓ Borrador cargado", "success");
+      showStatus("✓ Draft loaded", "success");
     } catch (err) {
       console.error("Error loading draft:", err);
     }
@@ -156,7 +155,7 @@ function saveDraft() {
   }));
 
   localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(data));
-  showStatus("✓ Guardado automáticamente", "success");
+  showStatus("✓ Saved automatically", "success");
 }
 
 function populateForm(data) {
@@ -441,7 +440,7 @@ function updateProgressBadge() {
 
   const totalSections = sections.length;
   const badgeEl = progressBadge.querySelector(".progress-text");
-  badgeEl.textContent = `${complete}/${totalSections} secciones`;
+  badgeEl.textContent = `${complete}/${totalSections} sections`;
 
   if (complete === totalSections) {
     progressBadge.classList.add("complete");
@@ -477,7 +476,7 @@ submitBtn.addEventListener("click", async (e) => {
 
   // Validate form
   if (!uxForm.checkValidity()) {
-    showToast("Por favor completa todos los campos requeridos", "error");
+    showToast("Please complete all required fields", "error");
     return;
   }
 
@@ -553,8 +552,8 @@ async function submitForm() {
     downloadBtn.disabled = false;
     copyJsonBtn.disabled = false;
     sendNotionBtn.disabled = !lastStructuredData;
-    showStatus('✓ Output generado', 'success');
-    showToast('¡JSON estructurado listo!', 'success');
+    showStatus('✓ Output generated', 'success');
+    showToast('Structured JSON ready!', 'success');
 
   } catch (err) {
     console.error("Submit error:", err);
@@ -576,7 +575,7 @@ downloadBtn.addEventListener("click", downloadOutput);
 copyJsonBtn.addEventListener("click", copyJsonForFigma);
 sendNotionBtn.addEventListener("click", async () => {
   if (!lastStructuredData) {
-    showToast("No hay datos para enviar", "error");
+    showToast("No data to send", "error");
     return;
   }
 
@@ -624,21 +623,21 @@ sendNotionBtn.addEventListener("click", async () => {
       // Show success and open page if Notion returns a URL
       const pageUrl = resBody?.page?.url || (resBody?.page && resBody.page.id ? `https://www.notion.so/${resBody.page.id.replace(/-/g, '')}` : null);
       if (pageUrl) {
-        showToast("Enviado a Notion correctamente — abriendo Notion...", "success");
+        showToast("Sent to Notion successfully — opening Notion...", "success");
         window.open(pageUrl, "_blank");
       } else {
-        showToast("Enviado a Notion correctamente", "success");
+        showToast("Sent to Notion successfully", "success");
       }
     } catch (err) {
       console.error("Notion send error:", err);
-      showToast(`Error al enviar a Notion: ${err.message}`, "error");
+      showToast(`Error sending to Notion: ${err.message}`, "error");
     } finally {
       sendNotionBtn.disabled = false;
       sendNotionBtn.classList.remove("loading");
     }
   } catch (err) {
-    console.error("Error al guardar credenciales de Notion:", err);
-    showToast(`Error al guardar credenciales de Notion: ${err.message}`, "error");
+    console.error("Error saving Notion credentials:", err);
+    showToast(`Error saving Notion credentials: ${err.message}`, "error");
     sendNotionBtn.disabled = false;
     sendNotionBtn.classList.remove("loading");
   }
@@ -647,12 +646,12 @@ sendNotionBtn.addEventListener("click", async () => {
 async function copyToClipboard() {
   try {
     await navigator.clipboard.writeText(output.textContent);
-    setStatus("✓ Copiado", "success");
-    showToast("Copiado al portapapeles", "success");
+    setStatus("✓ Copied", "success");
+    showToast("Copied to clipboard", "success");
   } catch (err) {
     console.error("Copy error:", err);
-    setStatus("Error al copiar", "error");
-    showToast("No se pudo copiar (permisos del navegador)", "error");
+    setStatus("Error copying", "error");
+    showToast("Could not copy (browser permissions)", "error");
   }
 }
 
@@ -669,28 +668,28 @@ function downloadOutput() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    showToast("Archivo descargado", "success");
+    showToast("File downloaded", "success");
   } catch (err) {
     console.error("Download error:", err);
-    showToast("Error al descargar", "error");
+    showToast("Error downloading", "error");
   }
 }
 
 async function copyJsonForFigma() {
   if (!lastStructuredData) {
-    showToast("No hay datos estructurados para copiar", "error");
+    showToast("No structured data to copy", "error");
     return;
   }
 
   try {
     const jsonString = JSON.stringify(lastStructuredData, null, 2);
     await navigator.clipboard.writeText(jsonString);
-    setStatus("✓ JSON copiado para Figma", "success");
-    showToast("JSON copiado - Pégalo en el plugin de Figma", "success");
+    setStatus("✓ JSON copied for Figma", "success");
+    showToast("JSON copied - Paste it in the Figma plugin", "success");
   } catch (err) {
     console.error("Copy JSON error:", err);
-    setStatus("Error al copiar JSON", "error");
-    showToast("No se pudo copiar JSON", "error");
+    setStatus("Error copying JSON", "error");
+    showToast("Could not copy JSON", "error");
   }
 }
 
@@ -721,68 +720,86 @@ document.addEventListener("keyup", () => {
   shortcutsHint.classList.remove("show");
 });
 
+
 // ============================================================================
-// LOAD EXAMPLE
+// EXAMPLE TOGGLE (Load/Clear Example)
 // ============================================================================
 
-if (loadExampleBtn) {
-  loadExampleBtn.addEventListener("click", async () => {
-    try {
-      if (Array.isArray(EXAMPLE_DATA.journeyStages)) {
-        const n = Math.max(1, Math.min(10, EXAMPLE_DATA.journeyStages.length));
-        numStagesInput.value = n;
-      }
-      generateStageInputs();
-      populateForm(EXAMPLE_DATA);
+let exampleIsActive = false;
 
-      // Safety: ensure the journey stage fields are filled after generation
-      if (Array.isArray(EXAMPLE_DATA.journeyStages)) {
-        EXAMPLE_DATA.journeyStages.forEach((s, i) => {
-          const nameEl = document.getElementById(`stageName${i + 1}`);
-          const whatEl = document.getElementById(`stageWhat${i + 1}`);
-          if (nameEl) nameEl.value = s.nameTimeline || "";
-          if (whatEl) whatEl.value = s.whatHappens || "";
-        });
-      }
+function updateToggleUI() {
+  if (!exampleToggleBtn) return;
+  const stateEl = exampleToggleBtn.querySelector('.toggle-state');
+  if (exampleIsActive) {
+    exampleToggleBtn.classList.add('active');
+    if (stateEl) stateEl.textContent = 'on';
+  } else {
+    exampleToggleBtn.classList.remove('active');
+    if (stateEl) stateEl.textContent = 'off';
+  }
+}
 
-      // Make the structured example data immediately available so users can
-      // copy the JSON or send directly to Notion without first calling Generate
-      lastStructuredData = JSON.parse(JSON.stringify(EXAMPLE_DATA)); // clone to avoid mutation
-      copyJsonBtn.disabled = false;
-      sendNotionBtn.disabled = false;
+function loadExample() {
+  try {
+    if (Array.isArray(EXAMPLE_DATA.journeyStages)) {
+      const n = Math.max(1, Math.min(10, EXAMPLE_DATA.journeyStages.length));
+      numStagesInput.value = n;
+    }
+    generateStageInputs();
+    populateForm(EXAMPLE_DATA);
 
-      updateLivePreview();
+    if (Array.isArray(EXAMPLE_DATA.journeyStages)) {
+      EXAMPLE_DATA.journeyStages.forEach((s, i) => {
+        const nameEl = document.getElementById('stageName' + (i + 1));
+        const whatEl = document.getElementById('stageWhat' + (i + 1));
+        if (nameEl) nameEl.value = s.nameTimeline || "";
+        if (whatEl) whatEl.value = s.whatHappens || "";
+      });
+    }
 
-      showToast("Ejemplo cargado - Ahora puedes generar el output", "success");
-    } catch (err) {
-      console.error("Error al cargar ejemplo:", err);
-      showToast("Error al cargar ejemplo", "error");
+    lastStructuredData = JSON.parse(JSON.stringify(EXAMPLE_DATA));
+    copyJsonBtn.disabled = false;
+    sendNotionBtn.disabled = false;
+
+    updateLivePreview();
+    exampleIsActive = true;
+    updateToggleUI();
+    showToast("Example loaded", "success");
+  } catch (err) {
+    console.error("Error loading example:", err);
+    showToast("Error loading example", "error");
+  }
+}
+
+function clearExample() {
+  localStorage.removeItem(CONFIG.STORAGE_KEY);
+  uxForm.reset();
+  output.textContent = "No result yet.";
+  output.style.display = 'none';
+  copyBtn.disabled = true;
+  downloadBtn.disabled = true;
+  copyJsonBtn.disabled = true;
+  lastStructuredData = null;
+  generateStageInputs();
+  updateProgressBadge();
+  updateTabsCompletion();
+  updateLivePreview();
+  exampleIsActive = false;
+  updateToggleUI();
+  showToast("Form cleared", "success");
+}
+
+if (exampleToggleBtn) {
+  exampleToggleBtn.addEventListener("click", () => {
+    if (exampleIsActive) {
+      clearExample();
+    } else {
+      loadExample();
     }
   });
 } else {
-  console.warn("loadExampleBtn not found in DOM");
+  console.warn("exampleToggleBtn not found in DOM");
 }
-
-// ============================================================================
-// CLEAR DRAFT
-// ============================================================================
-
-clearDraftBtn.addEventListener("click", () => {
-  if (confirm("¿Borrar borrador guardado? Esta acción no se puede deshacer.")) {
-    localStorage.removeItem(CONFIG.STORAGE_KEY);
-    uxForm.reset();
-    output.textContent = "Aún no hay resultado.";
-    output.style.display = 'none';
-    copyBtn.disabled = true;
-    downloadBtn.disabled = true;
-    copyJsonBtn.disabled = true;
-    generateStageInputs();
-    updateProgressBadge();
-    updateTabsCompletion();
-    updateLivePreview();
-    showToast("Borrador eliminado", "success");
-  }
-});
 
 // ============================================================================
 // UI HELPERS
@@ -956,7 +973,7 @@ function addNavigationButtons_OLD() {
       const prevBtn = document.createElement('button');
       prevBtn.type = 'button';
       prevBtn.className = 'btn secondary';
-      prevBtn.innerHTML = '← Anterior';
+      prevBtn.innerHTML = '← Previous';
       prevBtn.onclick = () => switchTab(sectionNum - 1);
       nav.appendChild(prevBtn);
     } else {
@@ -969,7 +986,7 @@ function addNavigationButtons_OLD() {
       const nextBtn = document.createElement('button');
       nextBtn.type = 'button';
       nextBtn.className = 'btn';
-      nextBtn.innerHTML = 'Siguiente →';
+      nextBtn.innerHTML = 'Next →';
       nextBtn.onclick = () => switchTab(sectionNum + 1);
       nav.appendChild(nextBtn);
     }
@@ -995,13 +1012,13 @@ function updateNotionStatus() {
   const pageId = notionPageIdInput.value?.trim();
 
   if (token && pageId) {
-    status.textContent = 'Configurado';
+    status.textContent = 'Configured';
     status.classList.add('connected');
   } else if (token || pageId) {
-    status.textContent = 'Incompleto';
+    status.textContent = 'Incomplete';
     status.classList.remove('connected');
   } else {
-    status.textContent = 'No configurado';
+    status.textContent = 'Not configured';
     status.classList.remove('connected');
   }
 }
@@ -1024,10 +1041,10 @@ function updateOutputSection(hasContent) {
   if (outputSection) {
     if (hasContent) {
       outputSection.classList.add('has-content');
-      if (meta) meta.textContent = 'Listo para copiar / pegar';
+      if (meta) meta.textContent = 'Ready to copy / paste';
     } else {
       outputSection.classList.remove('has-content');
-      if (meta) meta.textContent = 'Genera tu brief para ver el resultado';
+      if (meta) meta.textContent = 'Generate your brief to see the result';
     }
   }
 }
@@ -1037,8 +1054,8 @@ const originalOutput = output;
 if (originalOutput) {
   const observer = new MutationObserver(() => {
     const hasContent = originalOutput.textContent &&
-      !originalOutput.textContent.includes('Haz clic en') &&
-      !originalOutput.textContent.includes('Aún no hay');
+      !originalOutput.textContent.includes('Click on') &&
+      !originalOutput.textContent.includes('Not yet');
     updateOutputSection(hasContent);
   });
   observer.observe(originalOutput, { childList: true, characterData: true, subtree: true });
@@ -1078,7 +1095,7 @@ function initOutputPanel() {
       outputPanel.classList.add('has-content');
       if (outputPanelActions) outputPanelActions.style.display = 'flex';
       if (outputPanelLabel) outputPanelLabel.textContent = 'Output ✓';
-      if (meta) meta.textContent = 'Listo para copiar / pegar';
+      if (meta) meta.textContent = 'Ready to copy / paste';
 
       // Enable panel buttons
       if (copyBtnPanel) copyBtnPanel.disabled = false;
